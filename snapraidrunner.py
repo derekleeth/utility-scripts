@@ -303,16 +303,7 @@ def run():
     finish(True)
 
 
-def cleanup():
-    # Delete any 0 byte info files from the movie and tv folders.
-    # find /mnt/storage/media/movies -size 0 -name "*.nfo" -exec rm {} \;
-    # find /mnt/storage/media/tv -size 0 -name "*.nfo" -exec rm {} \;
-    target_size=0
-    for dirpath, dirs, files in os.walk("/mnt/storage/media/tv/"):
-        for file in files: 
-            path = os.path.join(dirpath, file)
-            if os.stat(path).st_size == target_size:
-                print(path)
+
 
 
 if __name__ == '__main__':
