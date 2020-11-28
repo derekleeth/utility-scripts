@@ -9,7 +9,7 @@ import configparser
 urllib3.disable_warnings()
 
 config_parser = configparser.ConfigParser()
-config_parser.read(r"../scripts.config")
+config_parser.read(r"/mnt/media/scripts/scripts.config")
 PLEX_CONFIG = config_parser['PLEX']
 
 LIBRARIES = ["Movies", "TV Shows"]
