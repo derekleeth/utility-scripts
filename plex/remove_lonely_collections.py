@@ -9,7 +9,7 @@ import configparser
 urllib3.disable_warnings()
 
 config_parser = configparser.ConfigParser()
-config_parser.read(r"/mnt/media/scripts/scripts.config")
+config_parser.read("/mnt/media/scripts/scripts.config")
 PLEX_CONFIG = config_parser['PLEX']
 
 LIBRARIES = ["Movies", "TV Shows"]
@@ -17,6 +17,9 @@ LIBRARIES = ["Movies", "TV Shows"]
 PLEX_URL = config_parser.get('PLEX', 'PLEX_URL')
 PLEX_TOKEN = config_parser.get('PLEX', 'PLEX_TOKEN')
 ## CODE BELOW ##
+
+print(PLEX_URL)
+print(PLEX_TOKEN)
 
 sess = requests.Session()
 sess.verify = False
