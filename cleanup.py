@@ -85,7 +85,7 @@ def remove_empty_dir(path):
 def remove_empty_dirs(path):
     for root, dirnames, filenames in os.walk(path, topdown=False):
         for dirname in dirnames:
-            syslog.syslog(syslog.LOG_INFO, "Removing any empty directories in {0}".format(path))
+            syslog.syslog(syslog.LOG_INFO, "Removing any empty directories in {0}".format(dirname))
             remove_empty_dir(os.path.realpath(os.path.join(root, dirname)))          
 
 if __name__ == '__main__':
