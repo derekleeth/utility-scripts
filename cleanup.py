@@ -32,6 +32,7 @@ def cleanup_zero_size_files():
 def cleanup_deleted_files():
     total, used, free = shutil.disk_usage("/mnt/storage")
     print(total, used, free)
+    print(free/total)
 
     delete_threshhold = arrow.now().shift(days=-7)
 
