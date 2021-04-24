@@ -4,6 +4,15 @@ import os
 import logging
 import logging.handlers
 
+logger = logging.getLogger('MyLogger')
+logger.setLevel(logging.DEBUG)
+
+handler = logging.handlers.SysLogHandler()
+
+logger.addHandler(handler)
+
+logger.debug('this is debug')
+
 zero_file_cleanup_dirs = ["/mnt/storage/media/tv/", "/mnt/storage/media/movies/"]
 media_cleanup_dirs = ["/mnt/storage/media/deleted_files/TV/", "/mnt/storage/media/deleted_files/Movies"]
 
@@ -24,6 +33,7 @@ def cleanup_zero_size_files():
                 path = os.path.join(dirpath, file)
                 if os.stat(path).st_size <= target_size:
                     print(path)
+                    os.remove(path)
 
 def cleanup_deleted_files():
     for cleanup_dir in zero_file_cleanup_dirs:
