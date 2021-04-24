@@ -71,10 +71,22 @@ def cleanup_deleted_files():
                         syslog.syslog(syslog.LOG_ERR, "OS error: {0}".format(err))
                     except:
                         syslog.syslog(syslog.LOG_ERR, "Unexpected error: {0}".format(sys.exc_info()[0]))
+
+        remove_empty_dirs(cleanup_dir)
     
     syslog.syslog(syslog.LOG_INFO, "Deleted {0} old files from recyling bin.".format(counter))
 
-                
+def remove_empty_dir(path):
+    try:
+        os.rmdir(path)
+    except OSError:
+        pass
+
+def remove_empty_dirs(path):
+    for root, dirnames, filenames in os.walk(path, topdown=False):
+        for dirname in dirnames:
+            syslog.syslog(syslog.LOG_INFO, "Removing any empty directories in {0}".path)
+            remove_empty_dir(os.path.realpath(os.path.join(root, dirname)))          
 
 if __name__ == '__main__':
     main()
