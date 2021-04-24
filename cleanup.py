@@ -37,7 +37,7 @@ def cleanup_deleted_files():
     free_perc = free/total
 
     if (free_perc) < 0.05:
-        delete_threshhold = arrow.now().shift(minutes=-20)
+        delete_threshhold = arrow.now().shift(minutes=-30)
     elif (free_perc) < 0.10:
         delete_threshhold = arrow.now().shift(days=-2)
     elif (free_perc) < 0.20:
