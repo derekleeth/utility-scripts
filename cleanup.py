@@ -5,6 +5,7 @@ import logging
 import logging.handlers
 import syslog
 import arrow
+import shutil
 
 syslog.syslog(syslog.LOG_INFO, "Starting media cleanup script.")
 
@@ -29,6 +30,9 @@ def cleanup_zero_size_files():
                     os.remove(path)
 
 def cleanup_deleted_files():
+    total, used, free = shutil.disk_usage("/mnt/storage")
+    print(total, used, free)
+
     delete_threshhold = arrow.now().shift(days=-7)
 
     for cleanup_dir in media_cleanup_dirs:
@@ -36,7 +40,7 @@ def cleanup_deleted_files():
             for file in files:  
                 path = os.path.join(dirpath, file)
                 mod_time = arrow.get(os.stat(path).st_ctime)
-                print(mod_time)
+                
                 if mod_time < delete_threshhold:
                     syslog.syslog(syslog.LOG_INFO, "Deleting {0}".format(path))
                     print("Deleting {0}".format(path))
