@@ -4,19 +4,9 @@ import os
 import logging
 import logging.handlers
 import syslog
+import arrow
 
-logger = logging.getLogger('MyLogger')
-logger.setLevel(logging.DEBUG)
-
-handler = logging.handlers.SysLogHandler()
-
-logger.addHandler(handler)
-
-logger.debug('this is debug')
-logger.info('this is debug')
-
-syslog.syslog(syslog.LOG_INFO, "Test message")
-
+syslog.syslog(syslog.LOG_INFO, "Starting media cleanup script.")
 
 zero_file_cleanup_dirs = ["/mnt/storage/media/tv/", "/mnt/storage/media/movies/"]
 media_cleanup_dirs = ["/mnt/storage/media/deleted_files/TV/", "/mnt/storage/media/deleted_files/Movies"]
@@ -26,9 +16,7 @@ def main():
 
 
 def cleanup_zero_size_files():
-    # Delete any 0 byte info files from the movie and tv folders.
-    # find /mnt/storage/media/movies -size 0 -name "*.nfo" -exec rm {} \;
-    # find /mnt/storage/media/tv -size 0 -name "*.nfo" -exec rm {} \;
+    syslog.syslog(syslog.LOG_INFO, "Delete any 0 byte info files from the movie and tv folders.")
 
     target_size=0
 
@@ -37,15 +25,20 @@ def cleanup_zero_size_files():
             for file in files: 
                 path = os.path.join(dirpath, file)
                 if os.stat(path).st_size <= target_size:
-                    print(path)
+                    syslog.syslog(syslog.LOG_INFO, "Deleting {0}".format(path))
                     os.remove(path)
 
 def cleanup_deleted_files():
-    for cleanup_dir in zero_file_cleanup_dirs:
+    delete_threshhold = arrow.now().shift(days=-7)
+
+    for cleanup_dir in media_cleanup_dirs:
         for dirpath, dirs, files in os.walk(cleanup_dir):
             for file in files:  
                 path = os.path.join(dirpath, file)
-                print(path)
+                mod_time = arrow.get(os.stat(path).st_mtime)
+                print(mod_time)
+                if os.stat(path).st_mtime < now - 7 * 86400:
+                    syslog.syslog(syslog.LOG_INFO, "Deleting {0}".format(path))
                 
 
 if __name__ == '__main__':
