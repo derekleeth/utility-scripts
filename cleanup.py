@@ -51,7 +51,7 @@ def cleanup_deleted_files():
                 
                 if mod_time < delete_threshhold:
                     syslog.syslog(syslog.LOG_INFO, "Deleting {0}".format(path))
-                    print("Deleting {0}".format(path))
+                    os.remove(path)
                 
 
 if __name__ == '__main__':
