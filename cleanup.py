@@ -59,7 +59,13 @@ def cleanup_deleted_files():
                 
                 if mod_time < delete_threshhold:
                     syslog.syslog(syslog.LOG_INFO, "Deleting {0}".format(path))
-                    os.remove(path)
+                    try:
+                        os.remove(path)
+                    except OSError as err:
+                        syslog.syslog(syslog.LOG_ERR, "OS error: {0}".format(err))
+                    except:
+                        syslog.syslog(syslog.LOG_ERR, "Unexpected error: {0}".format(sys.exc_info()[0]))
+
                 
 
 if __name__ == '__main__':
