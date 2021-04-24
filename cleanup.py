@@ -39,6 +39,7 @@ def cleanup_deleted_files():
                 print(mod_time)
                 if os.stat(path).st_mtime < now - 7 * 86400:
                     syslog.syslog(syslog.LOG_INFO, "Deleting {0}".format(path))
+                    print("Deleting {0}".format(path))
                 
 
 if __name__ == '__main__':
