@@ -32,12 +32,18 @@ def cleanup_zero_size_files():
                     mod_time = arrow.get(os.stat(path).st_ctime)
                     if mod_time < delete_threshhold:
                         syslog.syslog(syslog.LOG_INFO, "Deleting {0}".format(path))
-                        os.remove(path)
-                        counter += 1
-
-    syslog.syslog(syslog.LOG_INFO, "Deleted {0} empty files from the movie and tv folders.")
+                        try:
+                            os.remove(path)
+                            counter += 1
+                        except OSError as err:
+                            syslog.syslog(syslog.LOG_ERR, "OS error: {0}".format(err))
+                        except:
+                            syslog.syslog(syslog.LOG_ERR, "Unexpected error: {0}".format(sys.exc_info()[0]))
+                        
+    syslog.syslog(syslog.LOG_INFO, "Deleted {0} empty files from the movie and tv folders.".format(counter))
 
 def cleanup_deleted_files():
+    counter = 0
     delete_threshhold = arrow.now().shift(days=-30)
 
     total, used, free = shutil.disk_usage("/mnt/storage")
@@ -61,10 +67,13 @@ def cleanup_deleted_files():
                     syslog.syslog(syslog.LOG_INFO, "Deleting {0}".format(path))
                     try:
                         os.remove(path)
+                        counter += 1
                     except OSError as err:
                         syslog.syslog(syslog.LOG_ERR, "OS error: {0}".format(err))
                     except:
                         syslog.syslog(syslog.LOG_ERR, "Unexpected error: {0}".format(sys.exc_info()[0]))
+    
+    syslog.syslog(syslog.LOG_INFO, "Deleted {0} old files from recyling bin.".format(counter))
 
                 
 
