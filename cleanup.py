@@ -47,7 +47,6 @@ def cleanup_deleted_files():
     delete_threshhold = arrow.now().shift(days=-30)
 
     total, used, free = shutil.disk_usage("/mnt/storage")
-    print(total, used, free)
     free_perc = free/total
 
     if (free_perc) < 0.05:
