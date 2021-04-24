@@ -30,11 +30,18 @@ def cleanup_zero_size_files():
                     os.remove(path)
 
 def cleanup_deleted_files():
+    delete_threshhold = arrow.now().shift(days=-30)
+
     total, used, free = shutil.disk_usage("/mnt/storage")
     print(total, used, free)
-    print(free/total)
+    free_perc = free/total
 
-    delete_threshhold = arrow.now().shift(days=-7)
+    if (free_perc) < 0.05:
+        delete_threshhold = arrow.now().shift(minutes=-20)
+    elif (free_perc) < 0.10:
+        delete_threshhold = arrow.now().shift(days=-2)
+    elif (free_perc) < 0.20:
+        delete_threshhold = arrow.now().shift(days=-7)
 
     for cleanup_dir in media_cleanup_dirs:
         for dirpath, dirs, files in os.walk(cleanup_dir):
