@@ -37,7 +37,7 @@ def cleanup_deleted_files():
                 path = os.path.join(dirpath, file)
                 mod_time = arrow.get(os.stat(path).st_mtime)
                 print(mod_time)
-                if os.stat(path).st_mtime < now - 7 * 86400:
+                if mod_time < delete_threshhold:
                     syslog.syslog(syslog.LOG_INFO, "Deleting {0}".format(path))
                     print("Deleting {0}".format(path))
                 
