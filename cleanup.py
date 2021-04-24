@@ -13,7 +13,7 @@ media_cleanup_dirs = ["/mnt/storage/media/deleted_files/TV/", "/mnt/storage/medi
 
 def main():
     cleanup_zero_size_files()
-
+    cleanup_deleted_files()
 
 def cleanup_zero_size_files():
     syslog.syslog(syslog.LOG_INFO, "Delete any 0 byte info files from the movie and tv folders.")
