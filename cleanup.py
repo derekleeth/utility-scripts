@@ -29,7 +29,13 @@ def cleanup_zero_size_files():
             for file in files: 
                 path = os.path.join(dirpath, file)
                 if os.stat(path).st_size <= target_size:
-                    mod_time = arrow.get(os.stat(path).st_ctime)
+                    try:
+                        mod_time = arrow.get(os.stat(path).st_ctime)
+                    except OSError as err:
+                        syslog.syslog(syslog.LOG_ERR, "OS error: {0}".format(err))
+                    except:
+                        syslog.syslog(syslog.LOG_ERR, "Unexpected error: {0}".format(sys.exc_info()[0]))
+                    
                     if mod_time < delete_threshhold:
                         syslog.syslog(syslog.LOG_INFO, "Deleting {0}".format(path))
                         try:
