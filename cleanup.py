@@ -27,24 +27,24 @@ def cleanup_zero_size_files():
     for cleanup_dir in zero_file_cleanup_dirs:
         for dirpath, dirs, files in os.walk(cleanup_dir):
             for file in files: 
-                path = os.path.join(dirpath, file)
-                if os.stat(path).st_size <= target_size:
-                    try:
+                try: 
+                    path = os.path.join(dirpath, file)
+                    if os.stat(path).st_size <= target_size:
                         mod_time = arrow.get(os.stat(path).st_ctime)
-                    except OSError as err:
+                        
+                        if mod_time < delete_threshhold:
+                            syslog.syslog(syslog.LOG_INFO, "Deleting {0}".format(path))
+                            try:
+                                os.remove(path)
+                                counter += 1
+                            except OSError as err:
+                                syslog.syslog(syslog.LOG_ERR, "OS error: {0}".format(err))
+                            except:
+                                syslog.syslog(syslog.LOG_ERR, "Unexpected error: {0}".format(sys.exc_info()[0]))
+                except OSError as err:
                         syslog.syslog(syslog.LOG_ERR, "OS error: {0}".format(err))
-                    except:
-                        syslog.syslog(syslog.LOG_ERR, "Unexpected error: {0}".format(sys.exc_info()[0]))
-                    
-                    if mod_time < delete_threshhold:
-                        syslog.syslog(syslog.LOG_INFO, "Deleting {0}".format(path))
-                        try:
-                            os.remove(path)
-                            counter += 1
-                        except OSError as err:
-                            syslog.syslog(syslog.LOG_ERR, "OS error: {0}".format(err))
-                        except:
-                            syslog.syslog(syslog.LOG_ERR, "Unexpected error: {0}".format(sys.exc_info()[0]))
+                except:
+                    syslog.syslog(syslog.LOG_ERR, "Unexpected error: {0}".format(sys.exc_info()[0]))
                         
     syslog.syslog(syslog.LOG_INFO, "Deleted {0} empty files from the movie and tv folders.".format(counter))
 
